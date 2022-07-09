@@ -57,7 +57,7 @@ extension DemoVideoLoaderViewController: UITableViewDelegate {
             case let .success(url):
                 self?.toProcess(url: url)
             case let .failure(error):
-                let ac = UIAlertController(title: nil,
+                let ac = UIAlertController(title: "Error",
                                            message: error.localizedDescription,
                                            preferredStyle: .alert)
                 ac.addAction(.init(title: "OK", style: .default))
