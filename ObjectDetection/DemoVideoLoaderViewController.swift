@@ -12,10 +12,6 @@ import UIKit
 // MARK: - DemoVideoLoaderViewController
 class DemoVideoLoaderViewController: UIViewController {
     // MARK: Life Cycle
-    override func loadView() {
-        view = tableview
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -24,6 +20,8 @@ class DemoVideoLoaderViewController: UIViewController {
     // Internal
     private let tableview = UITableView()
     private let cellIdentifier = "Cell"
+
+    private var currentDownloadingMonitor: DownloadingMonitorViewController?
 
     private let demoFiles = [
         "bolt-detection.mp4",
@@ -54,6 +52,7 @@ extension DemoVideoLoaderViewController: UITableViewDelegate {
 
         let filename = demoFiles[indexPath.row]
         let task = downloadManager.fetch(filename: filename) { [weak self] result in
+            self?.hideDownloadingMonitor()
             switch result {
             case let .success(url):
                 self?.toProcess(url: url)
@@ -66,7 +65,7 @@ extension DemoVideoLoaderViewController: UITableViewDelegate {
             }
         }
         if let task = task {
-            // TODO: show downloading progress
+            showDownloadingMonitor(of: task)
         }
     }
 }
@@ -107,10 +106,37 @@ private extension DemoVideoLoaderViewController {
     }
 
     func setup(tableview: UITableView) {
+        view.addSubview(tableview)
+        tableview.snp.makeConstraints { $0.edges.equalToSuperview() }
         tableview.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 
         tableview.delegate = self
         tableview.dataSource = self
+    }
+}
+
+// MARK: - Animation
+private extension DemoVideoLoaderViewController {
+    func showDownloadingMonitor(of task: DownloadManager.DownloadingTask) {
+        // remove previous one
+        hideDownloadingMonitor()
+
+        let vc = DownloadingMonitorViewController(task: task)
+        view.addSubview(vc.view)
+        vc.view.snp.makeConstraints {
+            $0.centerY.equalToSuperview().offset(-20)
+            $0.centerX.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.66)
+        }
+        addChild(vc)
+        vc.didMove(toParent: self)
+        currentDownloadingMonitor = vc
+    }
+
+    func hideDownloadingMonitor() {
+        currentDownloadingMonitor?.willMove(toParent: nil)
+        currentDownloadingMonitor?.view.removeFromSuperview()
+        currentDownloadingMonitor?.removeFromParent()
     }
 }
 
@@ -126,5 +152,6 @@ private extension DemoVideoLoaderViewController {
 private extension DemoVideoLoaderViewController {
     func toProcess(url: URL) {
         // TODO: to process page
+        print(#function)
     }
 }
