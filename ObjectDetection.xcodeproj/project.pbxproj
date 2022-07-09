@@ -20,6 +20,7 @@
 		98959CC4287990F200FEE9E3 /* DemoVideoLoaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */; };
 		98959CC62879978F00FEE9E3 /* DownloadingMonitorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */; };
 		98959CC82879A3DB00FEE9E3 /* VideoProcessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */; };
+		98959CCA287A46C400FEE9E3 /* HumanDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC9287A46C400FEE9E3 /* HumanDetector.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoVideoLoaderViewController.swift; sourceTree = "<group>"; };
 		98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadingMonitorViewController.swift; sourceTree = "<group>"; };
 		98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessViewController.swift; sourceTree = "<group>"; };
+		98959CC9287A46C400FEE9E3 /* HumanDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanDetector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */,
 				98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */,
 				98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */,
+				98959CC9287A46C400FEE9E3 /* HumanDetector.swift */,
 			);
 			path = ObjectDetection;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 				7BCB411B21C3096100BFC4D0 /* AppDelegate.swift in Sources */,
 				98959CC62879978F00FEE9E3 /* DownloadingMonitorViewController.swift in Sources */,
 				7BCB413321C309B900BFC4D0 /* VideoCapture.swift in Sources */,
+				98959CCA287A46C400FEE9E3 /* HumanDetector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
