@@ -191,5 +191,9 @@ extension ViewController: VideoCaptureDelegate {
 // MARK: IBActions
 extension ViewController {
     @IBAction func onDetectHumanInVideos() {
+        let vc = DemoVideoLoaderViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .currentContext
+        present(nav, animated: true)
     }
 }
