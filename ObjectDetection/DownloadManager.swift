@@ -12,7 +12,9 @@ enum DownloadManagerError: Error {
     case unknown
 }
 
+// MARK: - DownloadManager
 class DownloadManager {
+    // MARK: - DownloadingTask
     class DownloadingTask {
         let filename: String
         let task: URLSessionDownloadTask
@@ -29,6 +31,11 @@ class DownloadManager {
         }
     }
 
+    /// Fetch the file
+    /// - Parameters:
+    ///   - filename: the filename you want to fetch
+    ///   - completion: when the download task finished, it returns URL for the file is saved if the download task success, else it will return the Error
+    /// - Returns: if the file needs to be downloaded, it will return the task. If the file exists already, it will return nil
     func fetch(filename: String, completion: @escaping (Result<URL, Error>) -> Void) -> DownloadingTask? {
         if let url = findInDocument(filename: filename) {
             print("\(filename) is downloaded")
@@ -72,6 +79,7 @@ class DownloadManager {
         return downloadingTask
     }
 
+    // Internal
     private let domain = URL(string: "https://raw.githubusercontent.com/intel-iot-devkit/sample-videos/master/")!
     private let session = URLSession(configuration: .default)
     private var tasks = [DownloadingTask]() {
@@ -81,7 +89,7 @@ class DownloadManager {
     }
 }
 
-// MARK: File
+// MARK: - File
 private extension DownloadManager {
     var documentPath: URL {
         let paths = NSSearchPathForDirectoriesInDomains(
@@ -103,7 +111,7 @@ private extension DownloadManager {
     }
 }
 
-// MARK: Download Task
+// MARK: - Download Task
 private extension DownloadManager {
     func finished(filename: String, result: Result<URL, Error>) {
         DispatchQueue.main.async {
