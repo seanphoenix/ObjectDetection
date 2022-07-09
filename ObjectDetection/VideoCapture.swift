@@ -2,7 +2,7 @@ import AVFoundation
 import CoreVideo
 import UIKit
 
-public protocol VideoCaptureDelegate: class {
+public protocol VideoCaptureDelegate: AnyObject {
   func videoCapture(_ capture: VideoCapture, didCaptureVideoFrame: CMSampleBuffer)
 }
 
@@ -65,11 +65,12 @@ public class VideoCapture: NSObject {
     videoOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
 
     captureSession.commitConfiguration()
+      isSetupFinished = true
     return true
   }
 
   public func start() {
-    if !captureSession.isRunning {
+    if isSetupFinished, !captureSession.isRunning {
       captureSession.startRunning()
     }
   }
@@ -79,6 +80,8 @@ public class VideoCapture: NSObject {
       captureSession.stopRunning()
     }
   }
+
+    private var isSetupFinished = false
 }
 
 extension VideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
