@@ -93,6 +93,18 @@ class ViewController: UIViewController {
     resizePreviewLayer()
   }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        videoCapture.start()
+        print("videoCapture started")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        videoCapture.stop()
+        print("videoCapture stopped")
+    }
+
   func resizePreviewLayer() {
     videoCapture.previewLayer?.frame = videoPreview.bounds
   }
