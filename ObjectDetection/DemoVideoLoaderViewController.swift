@@ -151,7 +151,7 @@ private extension DemoVideoLoaderViewController {
 // MARK: - Route
 private extension DemoVideoLoaderViewController {
     func toProcess(url: URL) {
-        // TODO: to process page
-        print(#function)
+        let vc = VideoProcessViewController(url: url)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
