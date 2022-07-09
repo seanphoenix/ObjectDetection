@@ -15,6 +15,7 @@
 		7BCB413221C309B900BFC4D0 /* BoundingBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCB412E21C309B900BFC4D0 /* BoundingBoxView.swift */; };
 		7BCB413321C309B900BFC4D0 /* VideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCB412F21C309B900BFC4D0 /* VideoCapture.swift */; };
 		7BCB413921C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7BCB413821C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel */; };
+		98959CC2287989D800FEE9E3 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC1287989D800FEE9E3 /* DownloadManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		7BCB412E21C309B900BFC4D0 /* BoundingBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoundingBoxView.swift; sourceTree = "<group>"; };
 		7BCB412F21C309B900BFC4D0 /* VideoCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCapture.swift; sourceTree = "<group>"; };
 		7BCB413821C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2_SSDLite.mlmodel; sourceTree = "<group>"; };
+		98959CC1287989D800FEE9E3 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				7BCB412621C3096200BFC4D0 /* Info.plist */,
 				7BCB412321C3096200BFC4D0 /* LaunchScreen.storyboard */,
 				7BCB411E21C3096100BFC4D0 /* Main.storyboard */,
+				98959CC1287989D800FEE9E3 /* DownloadManager.swift */,
 			);
 			path = ObjectDetection;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7BCB411D21C3096100BFC4D0 /* ViewController.swift in Sources */,
+				98959CC2287989D800FEE9E3 /* DownloadManager.swift in Sources */,
 				7BCB413221C309B900BFC4D0 /* BoundingBoxView.swift in Sources */,
 				7BCB413921C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel in Sources */,
 				7BCB411B21C3096100BFC4D0 /* AppDelegate.swift in Sources */,
