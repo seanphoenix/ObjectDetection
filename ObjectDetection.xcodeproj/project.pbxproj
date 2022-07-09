@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,7 @@
 		7BCB413921C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 7BCB413821C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel */; };
 		84B26D549900B87230D9E559 /* Pods_ObjectDetection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45FA65538A6BAA96D2331E23 /* Pods_ObjectDetection.framework */; };
 		98959CC2287989D800FEE9E3 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC1287989D800FEE9E3 /* DownloadManager.swift */; };
+		98959CC4287990F200FEE9E3 /* DemoVideoLoaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		7BCB413821C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2_SSDLite.mlmodel; sourceTree = "<group>"; };
 		847D7F9A438A38D4BDD770F0 /* Pods-ObjectDetection.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ObjectDetection.debug.xcconfig"; path = "Target Support Files/Pods-ObjectDetection/Pods-ObjectDetection.debug.xcconfig"; sourceTree = "<group>"; };
 		98959CC1287989D800FEE9E3 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoVideoLoaderViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				7BCB412321C3096200BFC4D0 /* LaunchScreen.storyboard */,
 				7BCB411E21C3096100BFC4D0 /* Main.storyboard */,
 				98959CC1287989D800FEE9E3 /* DownloadManager.swift */,
+				98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */,
 			);
 			path = ObjectDetection;
 			sourceTree = "<group>";
@@ -89,7 +92,6 @@
 				847D7F9A438A38D4BDD770F0 /* Pods-ObjectDetection.debug.xcconfig */,
 				62A33056FC007EFDC5A692B4 /* Pods-ObjectDetection.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -220,6 +222,7 @@
 				7BCB411D21C3096100BFC4D0 /* ViewController.swift in Sources */,
 				98959CC2287989D800FEE9E3 /* DownloadManager.swift in Sources */,
 				7BCB413221C309B900BFC4D0 /* BoundingBoxView.swift in Sources */,
+				98959CC4287990F200FEE9E3 /* DemoVideoLoaderViewController.swift in Sources */,
 				7BCB413921C55F9B00BFC4D0 /* MobileNetV2_SSDLite.mlmodel in Sources */,
 				7BCB411B21C3096100BFC4D0 /* AppDelegate.swift in Sources */,
 				7BCB413321C309B900BFC4D0 /* VideoCapture.swift in Sources */,
