@@ -175,3 +175,9 @@ extension ViewController: VideoCaptureDelegate {
     predict(sampleBuffer: sampleBuffer)
   }
 }
+
+// MARK: IBActions
+extension ViewController {
+    @IBAction func onDetectHumanInVideos() {
+    }
+}
