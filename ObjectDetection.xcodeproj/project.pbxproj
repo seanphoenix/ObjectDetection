@@ -23,6 +23,7 @@
 		98959CCA287A46C400FEE9E3 /* HumanDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC9287A46C400FEE9E3 /* HumanDetector.swift */; };
 		98959CCC287A561800FEE9E3 /* PhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */; };
 		98959CCE287B45C200FEE9E3 /* TrackLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CCD287B45C200FEE9E3 /* TrackLoading.swift */; };
+		98959CD0287B51BB00FEE9E3 /* VideoRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CCF287B51BB00FEE9E3 /* VideoRecording.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		98959CC9287A46C400FEE9E3 /* HumanDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanDetector.swift; sourceTree = "<group>"; };
 		98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbum.swift; sourceTree = "<group>"; };
 		98959CCD287B45C200FEE9E3 /* TrackLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackLoading.swift; sourceTree = "<group>"; };
+		98959CCF287B51BB00FEE9E3 /* VideoRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRecording.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */,
 				98959CC9287A46C400FEE9E3 /* HumanDetector.swift */,
 				98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */,
+				98959CCF287B51BB00FEE9E3 /* VideoRecording.swift */,
 			);
 			path = ObjectDetection;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				98959CC82879A3DB00FEE9E3 /* VideoProcessViewController.swift in Sources */,
+				98959CD0287B51BB00FEE9E3 /* VideoRecording.swift in Sources */,
 				98959CCC287A561800FEE9E3 /* PhotoAlbum.swift in Sources */,
 				7BCB411D21C3096100BFC4D0 /* ViewController.swift in Sources */,
 				98959CC2287989D800FEE9E3 /* DownloadManager.swift in Sources */,
