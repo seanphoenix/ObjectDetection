@@ -33,6 +33,8 @@ class VideoProcessViewController: UIViewController {
     private let url: URL
 
     private var photoAlbum: PhotoAlbum?
+    private var detector: HumanDetector?
+
     private let authHint = UILabel()
     private let imageView = UIImageView()
     private let progressBar = UIProgressView()
@@ -149,11 +151,29 @@ private extension VideoProcessViewController {
         photoAlbum = .init()
         photoAlbum?.authorizationStatusUpdate = { [weak self] authorized in
             if authorized {
+                self?.startProcess()
             } else {
                 self?.authHint.isHidden = false
             }
         }
     }
+
+    func startProcess() {
+        loadTracks(assetURL: url) { result in
+            switch result {
+            case let .success(sourceMedia):
+                self.createDetector(sourceMedia)
+            case let .failure(error):
+                let ac = UIAlertController(title: "Error",
+                                           message: error.localizedDescription,
+                                           preferredStyle: .alert)
+                ac.addAction(.init(title: "OK", style: .default))
+                self.present(ac, animated: true)
+            }
+        }
+    }
+
+    func createDetector(_ sourceMedia: SourceMedia) {
     }
 }
 
