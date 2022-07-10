@@ -54,21 +54,40 @@ class PhotoAlbum {
 // MARK: - PhotoLibrary Access Authorization
 private extension PhotoAlbum {
     func checkPermission() {
-        let status = PHPhotoLibrary.authorizationStatus()
-        if status == .notDetermined {
-            PHPhotoLibrary.requestAuthorization { status in
-                if status == .authorized {
-                    self.getAlbum()
-                    self.authStatus = true
-                } else {
-                    self.authStatus = false
+        if #available(iOS 14, *) {
+            let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+            if status == .notDetermined {
+                PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+                    if status == .authorized {
+                        self.getAlbum()
+                        self.authStatus = true
+                    } else {
+                        self.authStatus = false
+                    }
                 }
+            } else if status == .authorized {
+                self.getAlbum()
+                authStatus = true
+            } else {
+                authStatus = false
             }
-        } else if status == .authorized {
-            self.getAlbum()
-            authStatus = true
         } else {
-            authStatus = false
+            let status = PHPhotoLibrary.authorizationStatus()
+            if status == .notDetermined {
+                PHPhotoLibrary.requestAuthorization { status in
+                    if status == .authorized {
+                        self.getAlbum()
+                        self.authStatus = true
+                    } else {
+                        self.authStatus = false
+                    }
+                }
+            } else if status == .authorized {
+                self.getAlbum()
+                authStatus = true
+            } else {
+                authStatus = false
+            }
         }
     }
 }
