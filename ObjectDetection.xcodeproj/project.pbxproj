@@ -21,6 +21,7 @@
 		98959CC62879978F00FEE9E3 /* DownloadingMonitorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */; };
 		98959CC82879A3DB00FEE9E3 /* VideoProcessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */; };
 		98959CCA287A46C400FEE9E3 /* HumanDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CC9287A46C400FEE9E3 /* HumanDetector.swift */; };
+		98959CCC287A561800FEE9E3 /* PhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadingMonitorViewController.swift; sourceTree = "<group>"; };
 		98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcessViewController.swift; sourceTree = "<group>"; };
 		98959CC9287A46C400FEE9E3 /* HumanDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HumanDetector.swift; sourceTree = "<group>"; };
+		98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbum.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 				98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */,
 				98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */,
 				98959CC9287A46C400FEE9E3 /* HumanDetector.swift */,
+				98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */,
 			);
 			path = ObjectDetection;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				98959CC82879A3DB00FEE9E3 /* VideoProcessViewController.swift in Sources */,
+				98959CCC287A561800FEE9E3 /* PhotoAlbum.swift in Sources */,
 				7BCB411D21C3096100BFC4D0 /* ViewController.swift in Sources */,
 				98959CC2287989D800FEE9E3 /* DownloadManager.swift in Sources */,
 				7BCB413221C309B900BFC4D0 /* BoundingBoxView.swift in Sources */,
