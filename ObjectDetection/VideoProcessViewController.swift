@@ -28,6 +28,12 @@ class VideoProcessViewController: UIViewController {
         bind()
     }
 
+    override func willMove(toParent parent: UIViewController?) {
+        super.willMove(toParent: parent)
+        if parent == nil {
+            detector?.cancel()
+        }
+    }
 
     // Internal
     private let url: URL
