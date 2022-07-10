@@ -59,7 +59,7 @@ class HumanDetector {
             while self?.isCancelled == false,
                   let sampleBuffer = videoOutput.copyNextSampleBuffer(),
                   let buffer = output.copyNextSampleBuffer() {
-                let time = CMSampleBufferGetDecodeTimeStamp(buffer)
+                let time = CMSampleBufferGetPresentationTimeStamp(buffer)
                 let duration = CMSampleBufferGetDuration(buffer)
                 print("time - \(CMTimeGetSeconds(time)) \(time)")
                 print("duration - \(CMTimeGetSeconds(duration)) \(duration)")
