@@ -83,7 +83,6 @@
 		7BCB411921C3096100BFC4D0 /* ObjectDetection */ = {
 			isa = PBXGroup;
 			children = (
-				98959CCD287B45C200FEE9E3 /* TrackLoading.swift */,
 				7BCB411A21C3096100BFC4D0 /* AppDelegate.swift */,
 				7BCB412E21C309B900BFC4D0 /* BoundingBoxView.swift */,
 				7BCB412F21C309B900BFC4D0 /* VideoCapture.swift */,
@@ -93,15 +92,32 @@
 				7BCB412621C3096200BFC4D0 /* Info.plist */,
 				7BCB412321C3096200BFC4D0 /* LaunchScreen.storyboard */,
 				7BCB411E21C3096100BFC4D0 /* Main.storyboard */,
-				98959CC1287989D800FEE9E3 /* DownloadManager.swift */,
+				98959CD1287B5B2A00FEE9E3 /* ViewControllers */,
+				98959CD2287B5B4200FEE9E3 /* Processors */,
+			);
+			path = ObjectDetection;
+			sourceTree = "<group>";
+		};
+		98959CD1287B5B2A00FEE9E3 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
 				98959CC3287990F200FEE9E3 /* DemoVideoLoaderViewController.swift */,
 				98959CC52879978F00FEE9E3 /* DownloadingMonitorViewController.swift */,
 				98959CC72879A3DB00FEE9E3 /* VideoProcessViewController.swift */,
-				98959CC9287A46C400FEE9E3 /* HumanDetector.swift */,
-				98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */,
-				98959CCF287B51BB00FEE9E3 /* VideoRecording.swift */,
 			);
-			path = ObjectDetection;
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		98959CD2287B5B4200FEE9E3 /* Processors */ = {
+			isa = PBXGroup;
+			children = (
+				98959CC1287989D800FEE9E3 /* DownloadManager.swift */,
+				98959CCD287B45C200FEE9E3 /* TrackLoading.swift */,
+				98959CC9287A46C400FEE9E3 /* HumanDetector.swift */,
+				98959CCF287B51BB00FEE9E3 /* VideoRecording.swift */,
+				98959CCB287A561800FEE9E3 /* PhotoAlbum.swift */,
+			);
+			path = Processors;
 			sourceTree = "<group>";
 		};
 		CD180094260CC66A7C218EED /* Pods */ = {

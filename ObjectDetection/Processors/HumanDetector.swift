@@ -225,3 +225,9 @@ private extension HumanDetector {
     }
 }
 
+// MARK: -
+private extension HumanDetector {
+    func record() {
+
+    }
+}
