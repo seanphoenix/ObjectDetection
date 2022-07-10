@@ -174,6 +174,27 @@ private extension VideoProcessViewController {
     }
 
     func createDetector(_ sourceMedia: SourceMedia) {
+        do {
+            detector = try HumanDetector(sourceMedia: sourceMedia)
+            detector?.progressUpdate = { [weak progressBar] progress in
+                progressBar?.progress = Float(progress)
+            }
+            detector?.frameUpdate = { [weak imageView] image in
+                imageView?.image = image
+            }
+            detector?.recordingStatusUpdate = { [weak recordingIndicator] status in
+                recordingIndicator?.isHidden = !status
+            }
+            detector?.finished = { [weak self] in
+                self?.navigationItem.rightBarButtonItem?.isEnabled = true
+            }
+        } catch {
+            let ac = UIAlertController(title: "Error",
+                                       message: error.localizedDescription,
+                                       preferredStyle: .alert)
+            ac.addAction(.init(title: "OK", style: .default))
+            present(ac, animated: true)
+        }
     }
 }
 
