@@ -23,7 +23,11 @@ class PhotoAlbum {
             completion(false, PhotoAlbumError.albumNotExist)
             return
         }
-        save(url: url, to: album, completion: completion)
+        save(url: url, to: album) { success, error in
+            DispatchQueue.main.async {
+                completion(success, error)
+            }
+        }
     }
 
     // MARK: - Constructor
