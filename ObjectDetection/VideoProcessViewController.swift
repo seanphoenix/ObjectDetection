@@ -33,6 +33,7 @@ class VideoProcessViewController: UIViewController {
     private let url: URL
     private let imageView = UIImageView()
     private let progressBar = UIProgressView()
+    private let recordingIndicator = UIView()
 }
 
 // MARK: - UI Layout
@@ -40,7 +41,8 @@ private extension VideoProcessViewController {
     /* View hierarchy
      * View
      *  ├ imageView
-     *  └ progressBar
+     *  | progressBar
+     *  └ recordingIndicator
      */
     func setupUI() {
         view.backgroundColor = .black
@@ -58,6 +60,15 @@ private extension VideoProcessViewController {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(24)
             $0.left.right.equalToSuperview().inset(20)
         }
+
+        view.addSubview(recordingIndicator)
+        recordingIndicator.snp.makeConstraints {
+            $0.top.equalTo(progressBar.snp.bottom).offset(16)
+            $0.right.equalToSuperview().inset(20)
+            $0.height.equalTo(40)
+        }
+        setup(recordingIndicator: recordingIndicator)
+        recordingIndicator.isHidden = true
     }
 
     func setupNav() {
@@ -68,6 +79,51 @@ private extension VideoProcessViewController {
             target: self,
             action: #selector(onDone))
         navigationItem.rightBarButtonItem?.isEnabled = false
+    }
+
+    /* View hierarchy
+     * recordingIndicator
+     *  ├ redDot
+     *  └ text
+     */
+    func setup(recordingIndicator: UIView) {
+        recordingIndicator.layer.cornerRadius = 20
+        recordingIndicator.clipsToBounds = true
+        recordingIndicator.layer.borderColor = UIColor.white.cgColor
+        recordingIndicator.layer.borderWidth = 2
+
+        let redDot = UIView()
+        recordingIndicator.addSubview(redDot)
+        redDot.snp.makeConstraints {
+            $0.width.height.equalTo(20)
+            $0.left.equalToSuperview().inset(10)
+            $0.centerY.equalToSuperview()
+        }
+        redDot.layer.cornerRadius = 10
+        redDot.clipsToBounds = true
+        redDot.backgroundColor = UIColor(red: 254.0 / 255,
+                                         green: 64.0 / 255,
+                                         blue: 74.0 / 255,
+                                         alpha: 1.0)
+        let anim = CABasicAnimation(keyPath: "opacity")
+        anim.duration = 1
+        anim.fromValue = 1
+        anim.toValue = 0.1
+        anim.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        anim.autoreverses = true
+        anim.repeatCount = .infinity
+        redDot.layer.add(anim, forKey: "opacity")
+
+        let text = UILabel()
+        recordingIndicator.addSubview(text)
+        text.snp.makeConstraints {
+            $0.left.equalTo(redDot.snp.right).offset(4)
+            $0.centerY.equalToSuperview()
+            $0.right.equalToSuperview().inset(10)
+        }
+        text.textColor = .white
+        text.text = "REC"
+        text.font = .systemFont(ofSize: 20, weight: .medium)
     }
 }
 
