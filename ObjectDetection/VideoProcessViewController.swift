@@ -31,6 +31,9 @@ class VideoProcessViewController: UIViewController {
 
     // Internal
     private let url: URL
+
+    private var photoAlbum: PhotoAlbum?
+    private let authHint = UILabel()
     private let imageView = UIImageView()
     private let progressBar = UIProgressView()
     private let recordingIndicator = UIView()
@@ -40,6 +43,7 @@ class VideoProcessViewController: UIViewController {
 private extension VideoProcessViewController {
     /* View hierarchy
      * View
+     *  ├ authHint
      *  ├ imageView
      *  | progressBar
      *  └ recordingIndicator
@@ -47,6 +51,18 @@ private extension VideoProcessViewController {
     func setupUI() {
         view.backgroundColor = .black
         setupNav()
+
+        view.addSubview(authHint)
+        authHint.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.6)
+        }
+        authHint.text = "Please grant Photo access to save videos with human detected"
+        authHint.numberOfLines = 0
+        authHint.textAlignment = .center
+        authHint.font = .systemFont(ofSize: 20, weight: .medium)
+        authHint.textColor = .white
+        authHint.isHidden = true
 
         view.addSubview(imageView)
         imageView.snp.makeConstraints {
@@ -130,6 +146,14 @@ private extension VideoProcessViewController {
 // MARK: - Data Binding
 private extension VideoProcessViewController {
     func bind() {
+        photoAlbum = .init()
+        photoAlbum?.authorizationStatusUpdate = { [weak self] authorized in
+            if authorized {
+            } else {
+                self?.authHint.isHidden = false
+            }
+        }
+    }
     }
 }
 
