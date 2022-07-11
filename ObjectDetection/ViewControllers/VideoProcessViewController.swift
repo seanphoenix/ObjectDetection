@@ -194,6 +194,19 @@ private extension VideoProcessViewController {
             detector?.finished = { [weak self] in
                 self?.navigationItem.rightBarButtonItem?.isEnabled = true
             }
+            detector?.newVideoRecordedUpdate = { [weak self] url in
+                self?.photoAlbum?.save(url: url) { _, error in
+                    if let error = error {
+                        let ac = UIAlertController(title: "Error",
+                                                   message: error.localizedDescription,
+                                                   preferredStyle: .alert)
+                        ac.addAction(.init(title: "OK", style: .default))
+                        self?.present(ac, animated: true)
+                    } else {
+                        print("Video saved into album")
+                    }
+                }
+            }
         } catch {
             let ac = UIAlertController(title: "Error",
                                        message: error.localizedDescription,
