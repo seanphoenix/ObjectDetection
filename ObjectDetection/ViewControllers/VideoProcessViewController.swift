@@ -75,7 +75,7 @@ private extension VideoProcessViewController {
         view.addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.left.right.equalToSuperview()
-            $0.centerY.equalToSuperview().offset(-20)
+            $0.centerY.equalToSuperview().offset(20)
         }
         imageView.contentMode = .scaleAspectFit
 
