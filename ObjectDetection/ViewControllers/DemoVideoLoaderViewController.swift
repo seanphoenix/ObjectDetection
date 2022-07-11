@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import MobileCoreServices
 
 // MARK: - DemoVideoLoaderViewController
 class DemoVideoLoaderViewController: UIViewController {
@@ -84,6 +85,33 @@ extension DemoVideoLoaderViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UIImagePickerControllerDelegate
+extension DemoVideoLoaderViewController: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let url = info[.mediaURL] as? URL {
+            picker.dismiss(animated: true) {
+                self.toProcess(url: url)
+            }
+        } else {
+            let ac = UIAlertController(title: "Error",
+                                       message: "No url",
+                                       preferredStyle: .alert)
+            ac.addAction(.init(title: "OK", style: .default))
+            picker.dismiss(animated: true) {
+                self.present(ac, animated: true)
+            }
+        }
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+
+// MARK: - UINavigationControllerDelegate
+extension DemoVideoLoaderViewController: UINavigationControllerDelegate {
+}
+
 // MARK: - UI Layout
 private extension DemoVideoLoaderViewController {
     func setupUI() {
@@ -103,6 +131,19 @@ private extension DemoVideoLoaderViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: barButton,
                                                            target: self,
                                                            action: #selector(onClose))
+        let rightButton: UIBarButtonItem
+        if #available(iOS 13, *) {
+            rightButton = UIBarButtonItem(image: .init(systemName: "photo"),
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(onOpenVideo))
+        } else {
+            rightButton = UIBarButtonItem(title: "Video",
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(onOpenVideo))
+        }
+        navigationItem.rightBarButtonItem = rightButton
     }
 
     func setup(tableview: UITableView) {
@@ -145,6 +186,15 @@ private extension DemoVideoLoaderViewController {
     @objc
     func onClose() {
         dismiss(animated: true)
+    }
+
+    @objc
+    func onOpenVideo() {
+        let videoPicker = UIImagePickerController()
+        videoPicker.delegate = self
+        videoPicker.sourceType = .photoLibrary
+        videoPicker.mediaTypes = [kUTTypeMovie as String]
+        present(videoPicker, animated: true)
     }
 }
 
