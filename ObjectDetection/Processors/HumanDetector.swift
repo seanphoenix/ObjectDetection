@@ -16,9 +16,13 @@ enum HumanDetectorError: Error {
 }
 
 class HumanDetector {
+    static let STOP_RECORDING_AFTER_NO_HUMAN_FOUND = Double(5)
+    static let EACH_VIDEO_TIME_LENGTH = Double(10)
+
     var progressUpdate: ((Double) -> Void)?
     var frameUpdate: ((UIImage) -> Void)?
     var recordingStatusUpdate: ((Bool) -> Void)?
+    var newVideoRecordedUpdate: ((URL) -> Void)?
     var finished: (() -> Void)?
 
     // MARK: Public Methods
@@ -28,62 +32,15 @@ class HumanDetector {
 
     // MARK: Constructor
     init(sourceMedia: SourceMedia) throws {
-        let reader = try AVAssetReader(asset: sourceMedia.asset)
-        let totalDuration = CMTimeGetSeconds(sourceMedia.videoTrack.timeRange.duration)
-        let outputSettings: [String: Any] = [
-            kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)
-        ]
-        let videoOutput = AVAssetReaderTrackOutput(track: sourceMedia.videoTrack,
-                                                   outputSettings: outputSettings)
-        videoOutput.alwaysCopiesSampleData = true
-        guard reader.canAdd(videoOutput) else {
-            throw HumanDetectorError.setupFailed
-        }
-        reader.add(videoOutput)
-
-        // once the video settings is set, the DecodeTimeStamp and Duration become invalid.
-        // create another output to retrieve them.
-        let output = AVAssetReaderTrackOutput(track: sourceMedia.videoTrack,
-                                              outputSettings: nil)
-        output.alwaysCopiesSampleData = false
-        guard reader.canAdd(output) else {
-            throw HumanDetectorError.setupFailed
-        }
-        reader.add(output)
-
-        guard reader.startReading() else {
-            throw HumanDetectorError.setupFailed
-        }
-
-        queue.async { [weak self] in
-            while self?.isCancelled == false,
-                  let sampleBuffer = videoOutput.copyNextSampleBuffer(),
-                  let buffer = output.copyNextSampleBuffer() {
-                let time = CMSampleBufferGetPresentationTimeStamp(buffer)
-                let duration = CMSampleBufferGetDuration(buffer)
-                print("time - \(CMTimeGetSeconds(time)) \(time)")
-                print("duration - \(CMTimeGetSeconds(duration)) \(duration)")
-
-                let progress = CMTimeGetSeconds(time) / totalDuration
-                if !progress.isNaN {
-                    DispatchQueue.main.async {
-                        self?.progressUpdate?(progress)
-                    }
-                }
-
-                self?.predict(sampleBuffer: sampleBuffer)
-            }
-            reader.cancelReading()
-
-            if self?.isCancelled == false {
-                DispatchQueue.main.async {
-                    self?.finished?()
-                }
-            }
-        }
+        self.sourceMedia = sourceMedia
+        try start()
     }
 
     // Internal
+    deinit {
+        stopRecording()
+    }
+
     private let coreMLModel: MobileNetV2_SSDLite = {
         let config = MLModelConfiguration()
         config.computeUnits = .all
@@ -101,16 +58,67 @@ class HumanDetector {
         }
     }()
 
+    private let sourceMedia: SourceMedia
     private var isCancelled = false
+    private var lastPersonFoundTime: Double = 0
+    private var recording: VideoRecording? {
+        didSet {
+            let isRecording = self.isRecording
+            DispatchQueue.main.async { [weak self] in
+                self?.recordingStatusUpdate?(isRecording)
+            }
+        }
+    }
 
     private let queue = DispatchQueue(label: "com.seanphoenix.human_detection",
                                       qos: .userInitiated)
-    private let renderQueue = DispatchQueue(label: "com.seanphoenix.video_processing",
-                                            qos: .userInitiated)
 }
 
 // MARK: - Internal
 private extension HumanDetector {
+    func start() throws {
+        let reader = try AVAssetReader(asset: sourceMedia.asset)
+        let totalDuration = CMTimeGetSeconds(sourceMedia.videoTrack.timeRange.duration)
+        let outputSettings: [String: Any] = [
+            kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)
+        ]
+        let videoOutput = AVAssetReaderTrackOutput(track: sourceMedia.videoTrack,
+                                                   outputSettings: outputSettings)
+        videoOutput.alwaysCopiesSampleData = true
+        guard reader.canAdd(videoOutput) else {
+            throw HumanDetectorError.setupFailed
+        }
+        reader.add(videoOutput)
+
+        guard reader.startReading() else {
+            throw HumanDetectorError.setupFailed
+        }
+
+        queue.async { [weak self] in
+            while self?.isCancelled == false,
+                  let sampleBuffer = videoOutput.copyNextSampleBuffer() {
+                let time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+
+                let progress = CMTimeGetSeconds(time) / totalDuration
+                if !progress.isNaN {
+                    DispatchQueue.main.async {
+                        self?.progressUpdate?(progress)
+                    }
+                }
+
+                self?.predict(sampleBuffer: sampleBuffer)
+            }
+            reader.cancelReading()
+            self?.stopRecording()
+
+            if self?.isCancelled == false {
+                DispatchQueue.main.async {
+                    self?.finished?()
+                }
+            }
+        }
+    }
+
     func predict(sampleBuffer: CMSampleBuffer) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
@@ -131,7 +139,7 @@ private extension HumanDetector {
                 print(error)
                 return
             }
-            self?.processObservations(for: request, with: pixelBuffer)
+            self?.processObservations(for: request, with: sampleBuffer)
         }
 
         // NOTE: If you use another crop/scale option, you must also change
@@ -146,23 +154,43 @@ private extension HumanDetector {
         }
     }
 
-    func processObservations(for request: VNRequest, with pixelBuffer: CVPixelBuffer) {
-        renderQueue.async {
-            if let results = request.results as? [VNRecognizedObjectObservation] {
-                self.render(pixelBuffer: pixelBuffer, with: results)
-            }
+    func processObservations(for request: VNRequest, with sampleBuffer: CMSampleBuffer) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+        let personFound = (request.results as? [VNRecognizedObjectObservation])?
+            .filter { $0.labels[0].identifier == "person" } ?? []
 
-            if let frameUpdate = self.frameUpdate,
-               let image = self.renderUIImage(pixelBuffer: pixelBuffer) {
-                DispatchQueue.main.async {
-                    frameUpdate(image)
+        if !personFound.isEmpty {
+            self.render(pixelBuffer: pixelBuffer, with: personFound)
+        }
+
+        if let frameUpdate = self.frameUpdate,
+           let image = self.renderUIImage(pixelBuffer: pixelBuffer) {
+            DispatchQueue.main.async {
+                frameUpdate(image)
+            }
+        }
+
+        let time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        let timeOfThisFrame = CMTimeGetSeconds(time)
+
+        if personFound.isEmpty {
+            if self.isRecording {
+                if timeOfThisFrame - self.lastPersonFoundTime > HumanDetector.STOP_RECORDING_AFTER_NO_HUMAN_FOUND {
+                    print("** stop recording for 5 sec no human")
+                    self.stopRecording()
+                } else {
+                    self.record(sampleBuffer: sampleBuffer)
                 }
             }
+        } else {
+            self.lastPersonFoundTime = timeOfThisFrame
+            self.record(sampleBuffer: sampleBuffer)
         }
     }
 
-    func render(pixelBuffer: CVPixelBuffer, with observed: [VNRecognizedObjectObservation]) {
-        let personFound = observed.filter { $0.labels[0].identifier == "person" }
+    func render(pixelBuffer: CVPixelBuffer, with personFound: [VNRecognizedObjectObservation]) {
         guard !personFound.isEmpty else { return }
 
         guard CVPixelBufferLockBaseAddress(pixelBuffer, .init(rawValue: 0)) == kCVReturnSuccess else {
@@ -225,9 +253,40 @@ private extension HumanDetector {
     }
 }
 
-// MARK: -
+// MARK: - Recording
 private extension HumanDetector {
-    func record() {
+    var isRecording: Bool {
+        recording != nil
+    }
 
+    func record(sampleBuffer: CMSampleBuffer) {
+        do {
+            if recording == nil {
+                let size = sourceMedia.videoTrack.naturalSize
+                recording = try VideoRecording(width: Int(size.width),
+                                               height: Int(size.height),
+                                               sourceMedia: sourceMedia)
+                recording?.finishedWritingUpdate = { [weak self] url in
+                    self?.newVideoRecordedUpdate?(url)
+                }
+            }
+
+            guard let rec = recording else { return }
+
+            let timeLength = try rec.append(sampleBuffer: sampleBuffer)
+
+            if timeLength >= HumanDetector.EACH_VIDEO_TIME_LENGTH {
+                print("** stop recording for 10 sec rule")
+                stopRecording()
+            }
+        } catch {
+            print(error)
+        }
+    }
+
+    func stopRecording() {
+        guard isRecording else { return }
+        recording?.finish()
+        recording = nil
     }
 }
