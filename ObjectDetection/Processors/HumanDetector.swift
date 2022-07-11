@@ -113,6 +113,7 @@ private extension HumanDetector {
 
             if self?.isCancelled == false {
                 DispatchQueue.main.async {
+                    self?.progressUpdate?(1)
                     self?.finished?()
                 }
             }
@@ -243,13 +244,28 @@ private extension HumanDetector {
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let height = CVPixelBufferGetHeight(pixelBuffer)
 
+        let preferredTransform = sourceMedia.videoTrack.preferredTransform
+        let radians = atan2(preferredTransform.b, preferredTransform.a)
+        let degree = (radians * 180) / .pi
+        let o: UIImage.Orientation
+        switch degree {
+        case -90:
+            o = .left
+        case 90:
+            o = .right
+        case 180:
+            o = .down
+        default:
+            o = .up
+        }
+
         let ciImage = CIImage(cvImageBuffer: pixelBuffer)
         let context = CIContext()
         let rect = CGRect(x: 0, y: 0, width: width, height: height)
         guard let cgImage = context.createCGImage(ciImage, from: rect) else {
             return nil
         }
-        return UIImage(cgImage: cgImage)
+        return UIImage(cgImage: cgImage, scale: 1, orientation: o)
     }
 }
 
