@@ -77,6 +77,7 @@ class VideoRecording {
         ]
         let input = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings)
         input.mediaTimeScale = sourceMedia.videoTimeScale
+        input.transform = sourceMedia.videoTrack.preferredTransform
         guard writer.canAdd(input) else { throw VideoRecordingError.setupFailed }
         writer.add(input)
         self.writerInput = input
