@@ -49,16 +49,22 @@ func loadTracks(assetURL: URL, completion: @escaping (Result<SourceMedia, Error>
                     guard videoTrack.statusOfValue(forKey: naturalTimeScaleKey, error: &error) == .loaded else {
                         throw error ?? LoadTracksError.unknown
                     }
-                    completion(.success(.init(asset: asset,
-                                              videoTrack: videoTrack,
-                                              videoTimeScale: videoTrack.naturalTimeScale)))
+                    DispatchQueue.main.async {
+                        completion(.success(.init(asset: asset,
+                                                  videoTrack: videoTrack,
+                                                  videoTimeScale: videoTrack.naturalTimeScale)))
+                    }
                 } catch {
-                    completion(.failure(error))
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
                 }
             }
 
         } catch {
-            completion(.failure(error))
+            DispatchQueue.main.async {
+                completion(.failure(error))
+            }
         }
     }
 }
