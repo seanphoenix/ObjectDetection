@@ -18,18 +18,25 @@ enum VideoRecordingError: Error {
 }
 
 class VideoRecording {
-    var finishedWritingUpdate: (() -> Void)?
+    var finishedWritingUpdate: ((URL) -> Void)?
 
     /// Append new frame (CMSampleBuffer) to the write
     /// - Parameter frame: the new frame
     /// - Returns: the total time it records
-    func append(frame: CMSampleBuffer) throws -> Double {
+    func append(sampleBuffer: CMSampleBuffer) throws -> Double {
         guard writer.status == .writing else { throw VideoRecordingError.notWriting }
+        if beginTime == nil {
+            beginTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        }
+        let newBuffer = try sampleBuffer.minusTiming(by: beginTime!)
+
+        // need to wait to get the time length after appended
         while !writerInput.isReadyForMoreMediaData {} // stupid busy loop
-        guard writerInput.append(frame) else { throw writer.error ?? VideoRecordingError.unknown }
-        let duration = CMTimeGetSeconds(writer.overallDurationHint)
-        print(">>> duration \(duration)")
-        return duration
+        guard writerInput.append(newBuffer) else {
+            throw writer.error ?? VideoRecordingError.unknown
+        }
+        let time = CMSampleBufferGetPresentationTimeStamp(newBuffer)
+        return CMTimeGetSeconds(time)
     }
 
     /// Cancel the recording
@@ -42,9 +49,11 @@ class VideoRecording {
     func finish() {
         guard writer.status == .writing else { return }
         writer.finishWriting {
+            print("\(#file) \(#function) finish writing")
             if self.writer.status == .completed {
+                print("\(#file) \(#function) finish writing complete")
                 DispatchQueue.main.async {
-                    self.finishedWritingUpdate?()
+                    self.finishedWritingUpdate?(self.writer.outputURL)
                 }
             }
         }
@@ -80,9 +89,7 @@ class VideoRecording {
 
     private let writer: AVAssetWriter
     private let writerInput: AVAssetWriterInput
-
-    private let queue = DispatchQueue(label: "com.seanphoenix.writer",
-                                      qos: .userInitiated)
+    private var beginTime: CMTime?
 }
 
 
@@ -97,4 +104,52 @@ private func cachePath() -> URL {
                             withIntermediateDirectories: true,
                             attributes: nil)
     return url
+}
+
+enum CMSampleBufferCustomError: Error {
+    case createBufferFailed
+}
+
+private extension CMSampleBuffer {
+    func minusTiming(by offset: CMTime) throws -> CMSampleBuffer {
+        var itemCount: CMItemCount = 0
+        CMSampleBufferGetSampleTimingInfoArray(
+            self,
+            entryCount: 0,
+            arrayToFill: nil,
+            entriesNeededOut: &itemCount)
+        var timingInfo = [CMSampleTimingInfo](repeating: .init(), count: itemCount)
+        CMSampleBufferGetSampleTimingInfoArray(
+            self,
+            entryCount: itemCount,
+            arrayToFill: &timingInfo,
+            entriesNeededOut: &itemCount)
+
+        timingInfo = timingInfo.map {
+            var newSampleTiming = $0
+            newSampleTiming.presentationTimeStamp = $0.presentationTimeStamp - offset
+            if $0.decodeTimeStamp.isValid {
+                newSampleTiming.decodeTimeStamp = $0.decodeTimeStamp - offset
+            }
+            return newSampleTiming
+        }
+
+        var newBuffer: CMSampleBuffer?
+        let result = CMSampleBufferCreateCopyWithNewTiming(
+            allocator: kCFAllocatorDefault,
+            sampleBuffer: self,
+            sampleTimingEntryCount: itemCount,
+            sampleTimingArray: timingInfo,
+            sampleBufferOut: &newBuffer)
+
+        guard result == noErr,
+              let newBuffer = newBuffer else {
+            throw CMSampleBufferCustomError.createBufferFailed
+        }
+        let oldOutputPresentationTimeStamp = CMSampleBufferGetOutputPresentationTimeStamp(newBuffer)
+        CMSampleBufferSetOutputPresentationTimeStamp(
+            newBuffer,
+            newValue: oldOutputPresentationTimeStamp - offset)
+        return newBuffer
+    }
 }
